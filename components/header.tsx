@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { clsx } from "clsx";
+import useUserStore from "@/lib/store/useUserStore";
+import { logout } from "@/lib/api/request";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +19,7 @@ import {
 
 import { CircleUser, Menu, Package2 } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 const Header = () => {
   const links = [
     {
@@ -36,6 +39,32 @@ const Header = () => {
     },
   ];
   const pathname = usePathname();
+  const isLoggedIn = useUserStore((state) => state.isLoggedIn);
+  const username = useUserStore((state) => state.username);
+  const storeLogout = useUserStore((state) => state.userLogout);
+
+  //如果cookie中存在isLoggedIn和username，则表示已登录，将其设置为store中的状态
+  if (document.cookie.includes("isLoggedIn=true")) {
+    const usernameRow = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("username="));
+
+    if (usernameRow) {
+      const username = usernameRow.split("=")[1];
+      useUserStore.setState({ isLoggedIn: true, username });
+    }
+  }
+
+  const handleLogout = async () => {
+    if (username === null) return;
+    storeLogout();
+    await logout(username);
+  };
+
+  const router = useRouter();
+  const handleLogin = () => {
+    router.push("/login");
+  };
   return (
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
@@ -79,12 +108,16 @@ const Header = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>
+              {isLoggedIn && username ? username : "游客"}
+            </DropdownMenuLabel>
             {/* <DropdownMenuSeparator />
             <DropdownMenuItem>Settings</DropdownMenuItem>
             <DropdownMenuItem>Support</DropdownMenuItem>
             <DropdownMenuSeparator /> */}
-            <DropdownMenuItem>注销</DropdownMenuItem>
+            <DropdownMenuItem onClick={isLoggedIn ? handleLogout : handleLogin}>
+              {isLoggedIn ? "注销" : "登录"}
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

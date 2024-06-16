@@ -5,13 +5,13 @@ import { DataTable } from "@/components/ui/data-table";
 import { fetchStockData } from "@/lib/api/request";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { initialPrices } from "@/lib/utils";
-
+import { useRouter } from "next/navigation";
 export default function Dashboard() {
   const [data, setData] = useState<stockInfo[]>([]);
   const [filteredData, setFilteredData] = useState<stockInfo[]>([]);
   const [selectedTab, setSelectedTab] = useState("总览");
   const [countdown, setCountdown] = useState(5);
-
+  const router = useRouter();
   const fetchData = async () => {
     const data = await fetchStockData();
     const processedData = data.map((stock: stockInfo) => {
@@ -29,6 +29,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchData();
+    router.refresh();
   }, []);
 
   useEffect(() => {
