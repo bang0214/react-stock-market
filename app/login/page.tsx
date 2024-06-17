@@ -11,12 +11,13 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login } from "@/lib/api/request";
+import { login, fetchBalance } from "@/lib/api/request";
 import { useState } from "react";
 import useUserStore from "@/lib/store/useUserStore";
 import { useRouter } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -33,9 +34,12 @@ export default function Login() {
 
   const handleLogin = async () => {
     const response = await login(username, password);
+
     if (response === true) {
       console.log("登录成功");
+      const balance = await fetchBalance(username);
       userStore.userLogin(username);
+      userStore.setBalance(balance);
       router.push("/dashboard");
     } else {
       console.log("登录失败");

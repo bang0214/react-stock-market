@@ -51,3 +51,48 @@ export async function fetchStockData() {
     return [];
   }
 }
+
+export async function fetchStockDetail(code: string) {
+  const url = `${api}/getStockPrice?code=${code}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch stock detail:", error);
+    return {};
+  }
+}
+
+export async function trade(
+  username: string,
+  code: string,
+  direction: string,
+  price: number,
+  amount: number
+) {
+  const url = `${api}/trade?username=${username}&code=${code}&direction=${direction}&price=${price}&amount=${amount}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to trade:", error);
+    return { success: false };
+  }
+}
+
+export async function fetchBalance(username: string) {
+  const url = `${api}/getBalance?username=${username}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch balance:", error);
+    return { balance: 0 };
+  }
+}

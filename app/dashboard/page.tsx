@@ -1,6 +1,6 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { stockInfo, columns } from "./typeDefinitions/columns";
+import { stockInfo, useColumns } from "./typeDefinitions/columns";
 import { DataTable } from "@/components/ui/data-table";
 import { fetchStockData } from "@/lib/api/request";
 import { useState, useEffect, useCallback, useMemo } from "react";
@@ -12,6 +12,8 @@ export default function Dashboard() {
   const [selectedTab, setSelectedTab] = useState("总览");
   const [countdown, setCountdown] = useState(5);
   const router = useRouter();
+  const columns = useColumns();
+
   const fetchData = async () => {
     const data = await fetchStockData();
     const processedData = data.map((stock: stockInfo) => {
@@ -62,7 +64,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="container mx-auto mt-8">
+      <div className="container mx-auto mt-4">
         <h1 className="text-2xl font-bold mb-4">
           大盘行情
           <span className="text-sm text-gray-500 ml-2">

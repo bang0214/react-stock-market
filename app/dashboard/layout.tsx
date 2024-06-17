@@ -9,7 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Header />
         </div>
       </div>
-      <div className="w-3/4 mx-auto p-6">{children}</div>
+      <div className="w-3/4 mx-auto p-5">{children}</div>
     </div>
   );
 }
