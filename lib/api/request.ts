@@ -96,3 +96,27 @@ export async function fetchBalance(username: string) {
     return { balance: 0 };
   }
 }
+
+export async function fetchHoldings(username: string) {
+  const url = `${api}/getInventory?username=${username}`;
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch holdings:", error);
+    return [];
+  }
+}
+
+export async function fetchTransactions(username: string) {
+  const url = `${api}/getTradeRecord?username=${username}`;
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch transactions:", error);
+    return [];
+  }
+}

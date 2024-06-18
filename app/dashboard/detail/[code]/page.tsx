@@ -1,5 +1,5 @@
 "use client";
-import { fetchStockDetail } from "@/lib/api/request";
+import { fetchStockDetail, fetchBalance } from "@/lib/api/request";
 import { useEffect, useState } from "react";
 import {
   LineChart,
@@ -51,7 +51,6 @@ export default function Detail({ params }: { params: { code: string } }) {
   const router = useRouter();
   const fetchData = async () => {
     const res: number[] = await fetchStockDetail(params.code);
-
     if (Array.isArray(res)) {
       const data = res.map((value: number, index: number) => ({
         index,
@@ -97,6 +96,8 @@ export default function Detail({ params }: { params: { code: string } }) {
         tradeAmount
       );
       setTradeStatus(res);
+      const balance = await fetchBalance(username);
+      useUserStore.setState({ balance });
     }
   };
 
@@ -190,6 +191,7 @@ export default function Detail({ params }: { params: { code: string } }) {
                   <input
                     type="number"
                     placeholder="价格"
+                    step={0.01}
                     value={tradePrice || ""}
                     onChange={(e) => setTradePrice(Number(e.target.value))}
                     className="px-4 py-2 border rounded"
@@ -198,6 +200,7 @@ export default function Detail({ params }: { params: { code: string } }) {
                   <input
                     type="number"
                     placeholder="数量"
+                    step={10}
                     value={tradeAmount || ""}
                     onChange={(e) => setTradeAmount(Number(e.target.value))}
                     className="px-4 py-2 border rounded"

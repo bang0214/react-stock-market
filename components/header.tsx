@@ -93,7 +93,7 @@ const Header = () => {
       </nav>
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <form className="ml-auto flex-1 sm:flex-initial">
-          <div className="relative">
+          <div className="relative ">
             <Balance></Balance>
           </div>
         </form>
